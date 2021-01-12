@@ -19,7 +19,7 @@ public class AppTest {
         while (isEnd == false) {
             List<String> argList = getArgs();
             System.out.println(argList);
-            isEnd = true;
+            isEnd = operationProcess(argList, isEnd);
         }
     }
 
@@ -43,5 +43,13 @@ public class AppTest {
         }
         System.out.println(argList);
         return argList;
+    }
+
+    public static boolean operationProcess(List<String> argList, boolean isEnd) {
+        if (argList.get(0).equals("quit")) {
+            System.out.println("終了");
+            isEnd = true;
+        }
+        return isEnd;
     }
 }
