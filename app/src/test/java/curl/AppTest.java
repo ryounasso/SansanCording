@@ -4,11 +4,43 @@
 package curl;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppTest {
-    @Test public void testAppHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+    public static void main(String[] args) {
+        boolean isEnd = false;
+
+        while (isEnd == false) {
+            List<String> argList = getArgs();
+            System.out.println(argList);
+            isEnd = true;
+        }
+    }
+
+    public static List<String> getArgs() {
+        // コマンドラインの引数オプションを格納するリスト
+        List<String> argList = new ArrayList<>();
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+        try {
+            System.out.print("コマンドを入力してください:");
+            String str = bufferedReader.readLine(); // 1行読み込む
+            String[] array = str.split(" "); // スペースで文字列を分解し配列化
+            // コマンドリストに要素を追加
+            for (int i = 0; i < array.length; i++) {
+                argList.add(array[i]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(argList);
+        return argList;
     }
 }
