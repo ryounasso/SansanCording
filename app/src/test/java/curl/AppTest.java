@@ -23,6 +23,7 @@ public class AppTest {
         }
     }
 
+    // コマンドを取得する関数
     public static List<String> getArgs() {
         // コマンドラインの引数オプションを格納するリスト
         List<String> argList = new ArrayList<>();
