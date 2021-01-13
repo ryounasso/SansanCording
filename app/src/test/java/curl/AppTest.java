@@ -31,7 +31,7 @@ public class AppTest {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
         try {
-            System.out.print("コマンドを入力してください:");
+            System.out.print("user$");
             String str = bufferedReader.readLine(); // 1行読み込む
             String[] array = str.split(" "); // スペースで文字列を分解し配列化
             // コマンドリストに要素を追加
@@ -41,7 +41,6 @@ public class AppTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(argList);
         return argList;
     }
 
@@ -53,6 +52,9 @@ public class AppTest {
 
             if (argList.size() == 0) {
                 System.out.println(TrimString(GET(url)));
+            } else if (argList.contains("-o")) {
+                System.out.println(TrimString(GET(url)));
+                outputText(TrimString(GET(url)), argList);
             }
         } else if (argList.get(0).equals("quit")) {
             isEnd = true;
@@ -119,6 +121,17 @@ public class AppTest {
         return url;
     }
 
+    private static String oCommand(List<String> argList) {
+        String outputFile = "";
+
+        for (int i = 0; i < argList.size(); i++) {
+            if (argList.get(i).equals("-o")) {
+                outputFile = argList.get(i + 1);
+            }
+        }
+        return outputFile;
+    }
+
     public static String TrimString(String resultText) {
         StringBuilder trimedResultText = new StringBuilder(resultText);
 
@@ -145,6 +158,18 @@ public class AppTest {
             // keyの後に改行コードを挿入
             resultText.insert(indexList.get(j) + 1 + insertcount, "\n");
             insertcount++; // 挿入回数をインクリメント
+        }
+    }
+
+    public static void outputText(String text, List<String> argList) {
+        String outputfile = oCommand(argList);
+
+        try {
+            FileWriter fileWriter = new FileWriter(outputfile);
+            fileWriter.write(text);
+            fileWriter.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
