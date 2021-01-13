@@ -44,6 +44,7 @@ public class AppTest {
         return argList;
     }
 
+    // コマンドラインから処理内容を取得し, それぞれの関数を呼び出し
     public static boolean operationProcess(List<String> argList, boolean isEnd) {
 
         if (argList.get(0).equals("curl")) {
@@ -62,6 +63,7 @@ public class AppTest {
         return isEnd;
     }
 
+    // GETメソッド
     public static String GET(String urltext) {
         String urlText = urltext;
         HttpURLConnection httpURLConnection = null;
@@ -107,6 +109,7 @@ public class AppTest {
         return null;
     }
 
+    // コマンドライン内から指定されたURLを抽出
     private static String SerachUrl(List<String> commandList) {
         String url = ""; // URL
 
@@ -121,6 +124,7 @@ public class AppTest {
         return url;
     }
 
+    // -oコマンド
     private static String oCommand(List<String> argList) {
         String outputFile = "";
 
@@ -161,6 +165,7 @@ public class AppTest {
         }
     }
 
+    // 指定されたファイルに出力する関数
     public static void outputText(String text, List<String> argList) {
         String outputfile = oCommand(argList);
 
