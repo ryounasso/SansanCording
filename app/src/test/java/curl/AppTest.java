@@ -46,10 +46,105 @@ public class AppTest {
     }
 
     public static boolean operationProcess(List<String> argList, boolean isEnd) {
-        if (argList.get(0).equals("quit")) {
-            System.out.println("終了");
+
+        if (argList.get(0).equals("curl")) {
+            argList.remove(0); // リストからcurlを削除
+            String url = SerachUrl(argList);
+
+            if (argList.size() == 0) {
+                System.out.println(TrimString(GET(url)));
+            }
+        } else if (argList.get(0).equals("quit")) {
             isEnd = true;
         }
         return isEnd;
+    }
+
+    public static String GET(String urltext) {
+        String urlText = urltext;
+        HttpURLConnection httpURLConnection = null;
+        InputStream inputResult = null;
+        BufferedReader bufferedReader = null;
+        StringBuilder resultTextBuilder = new StringBuilder();
+
+        try {
+            URL url = new URL(urlText);
+            // 接続用HttpURLConnectionオブジェクト作成
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.connect();
+
+            // 応答されたコードがHTTP_OK(200)なら結果を読み込む
+            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                inputResult = httpURLConnection.getInputStream(); // ストリームを取得
+                bufferedReader = new BufferedReader(new InputStreamReader(inputResult)); // ストリームから文字列読み取り
+                String resultText; // readLine()の際に格納する
+
+                // ストリングビルダーに最後の文字まで格納する
+                while ((resultText = bufferedReader.readLine()) != null) {
+                    resultTextBuilder.append(resultText);
+                }
+                return resultTextBuilder.toString();
+            }
+        } catch (IOException e) {
+            // catch:例外処理
+            e.printStackTrace(); // エラー箇所を表示
+        } finally {
+            // 例外してもしなくても実行される
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close(); // バッファリーダーを閉じる
+                }
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect(); // 接続を切る
+                }
+            } catch (IOException e) {
+                e.printStackTrace(); // エラー箇所を表示
+            }
+        }
+        return null;
+    }
+
+    private static String SerachUrl(List<String> commandList) {
+        String url = ""; // URL
+
+        for (int i = 0; i < commandList.size(); i++) {
+            // コマンドリストの要素にhttpから始まるものがあるなら
+            if (commandList.get(i).startsWith("http")) {
+                url = commandList.get(i); // 要素を取り出しURLに代入
+                commandList.remove(i); // リストから削除
+            }
+        }
+        System.out.println(url);
+        return url;
+    }
+
+    public static String TrimString(String resultText) {
+        StringBuilder trimedResultText = new StringBuilder(resultText);
+
+        InsertNewLine(trimedResultText, '>');
+        InsertNewLine(trimedResultText, ';');
+        InsertNewLine(trimedResultText, '{');
+        InsertNewLine(trimedResultText, '}');
+
+        return trimedResultText.toString();
+    }
+
+    private static void InsertNewLine(StringBuilder resultText, char keyOfNewLine) {
+        List<Integer> indexList = new ArrayList<>(); // keyが何番目にあるか格納するリスト
+        int insertcount = 0; // 改行コードを挿入した回数
+
+        for (int i = 0; i < resultText.length(); i++) {
+            // keyを発見するとリストに追加
+            if (resultText.charAt(i) == keyOfNewLine) {
+                indexList.add(i);
+            }
+        }
+
+        for (int j = 0; j < indexList.size(); j++) {
+            // keyの後に改行コードを挿入
+            resultText.insert(indexList.get(j) + 1 + insertcount, "\n");
+            insertcount++; // 挿入回数をインクリメント
+        }
     }
 }
