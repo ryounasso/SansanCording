@@ -52,10 +52,17 @@ public class AppTest {
             String url = SerachUrl(argList);
 
             if (argList.size() == 0) {
-                System.out.println(TrimString(GET(url)));
+                System.out.println(TrimString(GET(url, 0)));
             } else if (argList.contains("-o")) {
-                System.out.println(TrimString(GET(url)));
-                outputText(TrimString(GET(url)), argList);
+                System.out.println(TrimString(GET(url, 0)));
+                outputText(TrimString(GET(url, 0)), argList);
+            } else if (argList.contains("-v") && argList.contains("-o")) {
+                System.out.println(TrimString(GET(url, 1)));
+                outputText(TrimString(GET(url, 1)), argList);
+
+            } else if (argList.contains("-v")) {
+                System.out.println(TrimString(GET(url, 1)));
+
             }
         } else if (argList.get(0).equals("quit")) {
             isEnd = true;
@@ -64,7 +71,7 @@ public class AppTest {
     }
 
     // GETメソッド
-    public static String GET(String urltext) {
+    public static String GET(String urltext, int flag) {
         String urlText = urltext;
         HttpURLConnection httpURLConnection = null;
         InputStream inputResult = null;
@@ -76,6 +83,9 @@ public class AppTest {
             // 接続用HttpURLConnectionオブジェクト作成
             httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
+            if (flag == 1) {
+                printHeader(httpURLConnection); // ヘッダーをプリント
+            }
             httpURLConnection.connect();
 
             // 応答されたコードがHTTP_OK(200)なら結果を読み込む
@@ -88,7 +98,6 @@ public class AppTest {
                 while ((resultText = bufferedReader.readLine()) != null) {
                     resultTextBuilder.append(resultText);
                 }
-                return resultTextBuilder.toString();
             }
         } catch (IOException e) {
             // catch:例外処理
@@ -106,7 +115,7 @@ public class AppTest {
                 e.printStackTrace(); // エラー箇所を表示
             }
         }
-        return null;
+        return resultTextBuilder.toString();
     }
 
     // コマンドライン内から指定されたURLを抽出
@@ -176,5 +185,16 @@ public class AppTest {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    // ヘッダーをプリントするメソッド
+    private static void printHeader(HttpURLConnection httpURLConnection) {
+        // ヘッダーのキーのリスト
+        List<String> keyKist = new ArrayList<>(httpURLConnection.getHeaderFields().keySet());
+        for (int i = 0; i < keyKist.size(); i++) {
+            System.out.print(keyKist.get(i) + ":"); // ヘッダーのキーをプリント
+            System.out.println(httpURLConnection.getHeaderFields().get(keyKist.get(i))); // ヘッダーの値をプリント
+        }
+        System.out.println(); // 改行
     }
 }
