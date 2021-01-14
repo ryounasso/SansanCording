@@ -9,8 +9,11 @@ import static org.junit.Assert.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.WebSocketHandshakeException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class AppTest {
     public static void main(String[] args) {
@@ -83,6 +86,7 @@ public class AppTest {
             // 接続用HttpURLConnectionオブジェクト作成
             httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("GET");
+            // -vオプションが付与された場合
             if (flag == 1) {
                 printHeader(httpURLConnection); // ヘッダーをプリント
             }
@@ -187,14 +191,16 @@ public class AppTest {
         }
     }
 
-    // ヘッダーをプリントするメソッド
+    // ヘッダーをプリント
     private static void printHeader(HttpURLConnection httpURLConnection) {
-        // ヘッダーのキーのリスト
-        List<String> keyKist = new ArrayList<>(httpURLConnection.getHeaderFields().keySet());
-        for (int i = 0; i < keyKist.size(); i++) {
-            System.out.print(keyKist.get(i) + ":"); // ヘッダーのキーをプリント
-            System.out.println(httpURLConnection.getHeaderFields().get(keyKist.get(i))); // ヘッダーの値をプリント
+        // ヘッダーとヘッダーの値を取得
+        Map headers = httpURLConnection.getHeaderFields();
+        Iterator itHeader = headers.keySet().iterator();
+        String header = null;
+        while (itHeader.hasNext()) {
+            String headerKey = (String) itHeader.next();
+            header += headerKey + "：" + headers.get(headerKey) + "\r\n";
         }
-        System.out.println(); // 改行
+        System.out.print(header);
     }
 }
