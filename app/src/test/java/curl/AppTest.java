@@ -62,7 +62,10 @@ public class AppTest {
             } else if (argList.contains("-v") && argList.contains("-o")) {
                 System.out.println(TrimString(GET(url, 1)));
                 outputText(TrimString(GET(url, 1)), argList);
-
+            } else if (argList.contains("-X") && argList.contains("POST")) {
+                System.out.println(TrimString(POST(url, 0)));
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-v")) {
+                System.out.println(TrimString(POST(url, 1)));
             } else if (argList.contains("-v")) {
                 System.out.println(TrimString(GET(url, 1)));
 
@@ -104,10 +107,8 @@ public class AppTest {
                 }
             }
         } catch (IOException e) {
-            // catch:例外処理
             e.printStackTrace(); // エラー箇所を表示
         } finally {
-            // 例外してもしなくても実行される
             try {
                 if (bufferedReader != null) {
                     bufferedReader.close(); // バッファリーダーを閉じる
@@ -202,5 +203,52 @@ public class AppTest {
             header += headerKey + "：" + headers.get(headerKey) + "\r\n";
         }
         System.out.print(header);
+    }
+
+    // Postメソッド
+    public static String POST(String urltext, int flag) {
+        String urlText = urltext; // urlを読み込む
+        HttpURLConnection httpURLConnection = null;
+        InputStream inputResult = null; // 結果（バイト）を格納する変数
+        BufferedReader bufferedReader = null; // 結果を読み込み格納する
+        StringBuilder resultTextBuilder = new StringBuilder(); // 結果を格納する
+
+        try {
+            // try:必ず実行する処理
+            URL url = new URL(urlText); // 接続するURLを指定しインスタンス生成
+            // コネクションを取得（URLが参照するリモート・オブジェクトへの接続を表すインスタンスを取得）
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("POST"); // POSTメソッドをセット
+            if (flag == 1) {
+                printHeader(httpURLConnection);
+            }
+            httpURLConnection.connect(); // コネクト
+
+            // 応答されたコードがHTTP_OK(200)なら結果を読み込む
+            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                inputResult = httpURLConnection.getInputStream(); // ストリームを取得
+                bufferedReader = new BufferedReader(new InputStreamReader(inputResult)); // ストリームから文字列読み取り
+                String resultText; // readLine()の際に格納する
+
+                // ストリングビルダーに最後の文字まで格納する
+                while ((resultText = bufferedReader.readLine()) != null) {
+                    resultTextBuilder.append(resultText);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close(); // バッファリーダーを閉じる
+                }
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect(); // 接続を切る
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return resultTextBuilder.toString();
     }
 }
