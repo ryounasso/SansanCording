@@ -62,6 +62,8 @@ public class AppTest {
             } else if (argList.contains("-v") && argList.contains("-o")) {
                 System.out.println(TrimString(GET(url, 1)));
                 outputText(TrimString(GET(url, 1)), argList);
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d")) {
+                System.out.println(TrimString(POST(url, 0)));
             } else if (argList.contains("-X") && argList.contains("POST")) {
                 System.out.println(TrimString(POST(url, 0)));
             } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-v")) {
@@ -124,14 +126,14 @@ public class AppTest {
     }
 
     // コマンドライン内から指定されたURLを抽出
-    private static String SerachUrl(List<String> commandList) {
+    private static String SerachUrl(List<String> argList) {
         String url = ""; // URL
 
-        for (int i = 0; i < commandList.size(); i++) {
+        for (int i = 0; i < argList.size(); i++) {
             // コマンドリストの要素にhttpから始まるものがあるなら
-            if (commandList.get(i).startsWith("http")) {
-                url = commandList.get(i); // 要素を取り出しURLに代入
-                commandList.remove(i); // リストから削除
+            if (argList.get(i).startsWith("http")) {
+                url = argList.get(i); // 要素を取り出しURLに代入
+                argList.remove(i); // リストから削除
             }
         }
         System.out.println(url);
@@ -250,5 +252,73 @@ public class AppTest {
             }
         }
         return resultTextBuilder.toString();
+    }
+
+    // POST-dメソッド
+    public static String POSTD(String urltext,Str ing params,int flag){ 
+        String urlText = urltext;
+        String param = params;
+        System.out.println(param);
+        HttpURLConnection httpURLConnection = null;
+        InputStream inputResultText = null;
+        BufferedReader bufferedReader = null;
+        StringBuilder result = new StringBuilder();
+
+        try {
+            URL url = new URL(urlText); // 接続するURLを指定したインスタンスを生成
+            // コネクションを取得（URLが参照するリモート・オブジェクトへの接続を表すインスタンスを取得）
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setDoOutput(true); // 出力を可能にする
+            if(flag == 1){
+                printHeader(httpURLConnection);
+            }
+            httpURLConnection.setRequestMethod("POST"); // POSTメソッドをセット
+
+            // この接続に出力するストリーム
+            OutputStreamWriter out = new OutputStreamWriter(httpURLConnection.getOutputStream());
+            out.write(param); // 書き込み
+            out.close(); // 書き込み終了
+
+            httpURLConnection.connect(); // コネクト
+
+            // 応答されたコードがHTTP_OK(200)なら結果を読み込む
+            if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                inputResultText = httpURLConnection.getInputStream(); // ストリームを取得
+                bufferedReader = new BufferedReader(new InputStreamReader(inputResultText)); // ストリームを読み取り文字列を読み取る
+                String line; // readLine()の際に格納
+
+                // テキストを読み込み
+                while ((line = bufferedReader.readLine()) != null) {
+                    result.append(line);
+                }
+
+            } else { // コードがHTTP_OKじゃないならエラー結果を読み取る
+                // エラー表示を読み込み
+                inputResultText = httpURLConnection.getErrorStream();
+                bufferedReader = new BufferedReader(new InputStreamReader(inputResultText));
+                String line;
+
+                // テキストを読み込み
+                while ((line = bufferedReader.readLine()) != null) {
+                    result.append(line);
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+                if (httpURLConnection != null) {
+                    // コネクションを切断
+                    httpURLConnection.disconnect();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return result.toString();
     }
 }
