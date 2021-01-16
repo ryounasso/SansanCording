@@ -207,6 +207,21 @@ public class AppTest {
         System.out.print(header);
     }
 
+    private static String getParam(List<String> argList) {
+        String param = ""; // ファイルパラメータを格納
+
+        for (int i = 0; i < argList.size(); i++) {
+            if (argList.get(i).equals("-d")) {
+                param = argList.get(i + 1);
+            }
+        }
+        // ストリングビルダーに
+        StringBuilder newParam = new StringBuilder(param);
+        newParam.deleteCharAt(0); // 最初の'を削除
+        newParam.deleteCharAt(newParam.length() - 1); // 最後の'を削除
+        return newParam.toString();
+    }
+
     // Postメソッド
     public static String POST(String urltext, int flag) {
         String urlText = urltext; // urlを読み込む
