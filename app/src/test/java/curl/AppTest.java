@@ -56,21 +56,32 @@ public class AppTest {
 
             if (argList.size() == 0) {
                 System.out.println(TrimString(GET(url, 0)));
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d") && argList.contains("-o") && argList.contains("-v")) {
+                System.out.println(TrimString(POSTD(url, getParam(argList), 1)));
+                outputText(TrimString(POSTD(url, getParam(argList), 1)), argList);
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d") && argList.contains("-o")) {
+                System.out.println(TrimString(POSTD(url, getParam(argList), 0)));
+                outputText(TrimString(POSTD(url, getParam(argList), 0)), argList);
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d")) {
+                System.out.println(TrimString(POSTD(url, getParam(argList), 0)));
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-o") && argList.contains("-v")) {
+                System.out.println(TrimString(POST(url, 1)));
+                outputText(TrimString(POST(url, 0)), argList);
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-o")) {
+                System.out.println(TrimString(POST(url, 0)));
+                outputText(TrimString(POST(url, 0)), argList);
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-v")) {
+                System.out.println(TrimString(POST(url, 1)));
             } else if (argList.contains("-o")) {
                 System.out.println(TrimString(GET(url, 0)));
                 outputText(TrimString(GET(url, 0)), argList);
             } else if (argList.contains("-v") && argList.contains("-o")) {
                 System.out.println(TrimString(GET(url, 1)));
                 outputText(TrimString(GET(url, 1)), argList);
-            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d")) {
-                System.out.println(TrimString(POST(url, 0)));
             } else if (argList.contains("-X") && argList.contains("POST")) {
                 System.out.println(TrimString(POST(url, 0)));
-            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-v")) {
-                System.out.println(TrimString(POST(url, 1)));
-            } else if (argList.contains("-v")) {
+            }  else if (argList.contains("-v")) {
                 System.out.println(TrimString(GET(url, 1)));
-
             }
         } else if (argList.get(0).equals("quit")) {
             isEnd = true;
@@ -270,7 +281,7 @@ public class AppTest {
     }
 
     // POST-dメソッド
-    public static String POSTD(String urltext,Str ing params,int flag){ 
+    public static String POSTD(String urltext,String params,int flag){ 
         String urlText = urltext;
         String param = params;
         System.out.println(param);
