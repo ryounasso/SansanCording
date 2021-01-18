@@ -92,6 +92,8 @@ public class AppTest {
             // 終わる時の処理
         } else if (argList.get(0).equals("quit")) {
             isEnd = true;
+        } else {
+            System.out.println("This command not found");
         }
         return isEnd;
     }
