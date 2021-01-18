@@ -59,15 +59,18 @@ public class AppTest {
 
             if (argList.size() == 0) {
                 System.out.println(TrimString(GET(url, 0)));
-            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d") && argList.contains("-o") && argList.contains("-v")) {
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d")
+                    && argList.contains("-o") && argList.contains("-v")) {
                 System.out.println(TrimString(POSTD(url, getParam(argList), 1)));
                 outputText(TrimString(POSTD(url, getParam(argList), 1)), argList);
-            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d") && argList.contains("-o")) {
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d")
+                    && argList.contains("-o")) {
                 System.out.println(TrimString(POSTD(url, getParam(argList), 0)));
                 outputText(TrimString(POSTD(url, getParam(argList), 0)), argList);
             } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-d")) {
                 System.out.println(TrimString(POSTD(url, getParam(argList), 0)));
-            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-o") && argList.contains("-v")) {
+            } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-o")
+                    && argList.contains("-v")) {
                 System.out.println(TrimString(POST(url, 1)));
                 outputText(TrimString(POST(url, 0)), argList);
             } else if (argList.contains("-X") && argList.contains("POST") && argList.contains("-o")) {
@@ -83,9 +86,10 @@ public class AppTest {
                 outputText(TrimString(GET(url, 1)), argList);
             } else if (argList.contains("-X") && argList.contains("POST")) {
                 System.out.println(TrimString(POST(url, 0)));
-            }  else if (argList.contains("-v")) {
+            } else if (argList.contains("-v")) {
                 System.out.println(TrimString(GET(url, 1)));
             }
+            // 終わる時の処理
         } else if (argList.get(0).equals("quit")) {
             isEnd = true;
         }
@@ -166,6 +170,7 @@ public class AppTest {
         return outputFile;
     }
 
+    // 形を整える
     public static String TrimString(String resultText) {
         StringBuilder trimedResultText = new StringBuilder(resultText);
 
@@ -284,7 +289,7 @@ public class AppTest {
     }
 
     // POST-dメソッド
-    public static String POSTD(String urltext,String params,int flag){ 
+    public static String POSTD(String urltext, String params, int flag) {
         String urlText = urltext;
         String param = params;
         System.out.println(param);
@@ -298,7 +303,7 @@ public class AppTest {
             // コネクションを取得（URLが参照するリモート・オブジェクトへの接続を表すインスタンスを取得）
             httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setDoOutput(true); // 出力を可能にする
-            if(flag == 1){
+            if (flag == 1) {
                 printHeader(httpURLConnection);
             }
             httpURLConnection.setRequestMethod("POST"); // POSTメソッドをセット
@@ -351,4 +356,3 @@ public class AppTest {
         return result.toString();
     }
 }
-
